@@ -4,26 +4,31 @@
     "slug": "riffard-terminal",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "scheme": "riffardterminal",
+
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.riffardfunded.terminal",
-      "buildNumber": "1"
+      "buildNumber": "1",
+      "icon": "./assets/icon.png"
     },
+
     "android": {
       "package": "com.riffardfunded.terminal",
       "versionCode": 1,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logo.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#0B0B0D"
       }
     },
+
     "web": {
-      "favicon": "./assets/logo.png"
+      "favicon": "./assets/icon.png"
     },
+
     "plugins": [
       "expo-router",
       [
@@ -38,9 +43,11 @@
       "expo-secure-store",
       "expo-font"
     ],
+
     "experiments": {
       "typedRoutes": false
     },
+
     "extra": {
       "router": {},
       "eas": {
