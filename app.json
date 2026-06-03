@@ -17,13 +17,15 @@
     },
 
     "android": {
-      "package": "com.riffardfunded.terminal",
-      "versionCode": 1,
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
-        "backgroundColor": "#0B0B0D"
-      }
-    },
+  "package": "com.riffardfunded.terminal",
+  "versionCode": 1,
+  "permissions": [],
+  "blockedPermissions": ["android.permission.RECORD_AUDIO"],
+  "adaptiveIcon": {
+    "foregroundImage": "./assets/icon.png",
+    "backgroundColor": "#0B0B0D"
+  }
+},
 
     "web": {
       "favicon": "./assets/icon.png"
