@@ -174,11 +174,15 @@ const styles = StyleSheet.create({
   scroll: {
     backgroundColor: "transparent",
   },
-  content: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.xl,
-    paddingBottom: spacing.xl,
-  },
+ content: {
+  width: "100%",
+  maxWidth: 1400,
+  alignSelf: "center",
+
+  paddingHorizontal: spacing.lg,
+  paddingTop: spacing.xl,
+  paddingBottom: spacing.xl,
+},
   topRow: {
     flexDirection: "row",
     justifyContent: "space-between",
