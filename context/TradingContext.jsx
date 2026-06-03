@@ -18,9 +18,8 @@ import { useAuth } from "./AuthContext";
 
 const TradingContext = createContext(null);
 
-const MARKET_STREAM_URL = "https://riffardfunded.com/api/market/stream";
-const TRADING_STREAM_URL = "https://riffardfunded.com/api/trading/stream";
-
+const MARKET_STREAM_URL = "https://www.riffardfunded.com/api/market/stream";
+const TRADING_STREAM_URL = "https://www.riffardfunded.com/api/trading/stream";
 const RSCORE_REFRESH_INTERVAL = 60000;
 const RISK_SYNC_INTERVAL = 10000;
 const ACCOUNT_REFRESH_INTERVAL = 15000;
