@@ -99,6 +99,8 @@ export function AuthProvider({ children }) {
 
     setToken(data.token);
 
+    console.log("LOGIN TOKEN", data.token);
+
     try {
       await SecureStore.setItemAsync(TOKEN_KEY, data.token);
     } catch (e) {

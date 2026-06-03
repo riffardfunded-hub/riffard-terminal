@@ -18,14 +18,16 @@ export default function TabsLayout() {
     normalizedAccountType === "INSTITUTIONAL" ||
     normalizedAccountType === "INSTITUTIONAL_SELECTION";
 
-  if (authLoading) {
-    return <View style={styles.root} />;
-  }
+ if (authLoading) {
+  return <View style={styles.root} />;
+}
 
-  if (!token) {
-    return <Redirect href="/login" />;
-  }
+console.log("CURRENT TOKEN", token);
+console.log("CURRENT ACCOUNT", account);
 
+if (!token) {
+  return <Redirect href="/login" />;
+}
   return (
     <View style={styles.root}>
       <BackgroundVideo />
