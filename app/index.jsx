@@ -21,8 +21,11 @@ export default function IndexScreen() {
     );
   }
 
+  console.log("INDEX TOKEN", token);
+  console.log("INDEX ACCOUNT", account);
+
   if (token && account) {
-    return <Redirect href="/(tabs)" />;
+    return <Redirect href="/markets" />;
   }
 
   return <Redirect href="/login" />;

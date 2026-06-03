@@ -23,7 +23,7 @@ export default function Login() {
 
   useEffect(() => {
     if (!authLoading && token && account) {
-      router.replace("/(tabs)");
+      router.replace("/");
     }
   }, [authLoading, token, account, router]);
 
@@ -36,7 +36,7 @@ export default function Login() {
     try {
       setLoading(true);
       await login(email.trim(), password);
-      router.replace("/(tabs)");
+router.replace("/");
     } catch (e) {
       Alert.alert(
         "Login failed",
