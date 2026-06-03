@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  View
+  View,
 } from "react-native";
 import PrimaryButton from "../components/PrimaryButton";
 import { useAuth } from "../context/AuthContext";
@@ -22,22 +22,40 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    console.log("AUTH STATE", {
+      authLoading,
+      token,
+      account,
+    });
+
     if (!authLoading && token && account) {
+      console.log("AUTO REDIRECT");
       router.replace("/");
     }
   }, [authLoading, token, account, router]);
 
   const handleLogin = async () => {
+    console.log("BUTTON CLICKED");
+
     if (!email || !password) {
       Alert.alert("Error", "Email and password are required.");
       return;
     }
 
     try {
+      console.log("START LOGIN");
+
       setLoading(true);
-      await login(email.trim(), password);
-router.replace("/");
+
+      const result = await login(email.trim(), password);
+
+      console.log("LOGIN SUCCESS");
+      console.log("LOGIN RESULT", result);
+
+      router.replace("/");
     } catch (e) {
+      console.log("LOGIN ERROR", e);
+
       Alert.alert(
         "Login failed",
         e?.message || "Please check your credentials."
@@ -53,8 +71,6 @@ router.replace("/");
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <View style={styles.container}>
-        
-        {/* HEADER */}
         <View style={styles.header}>
           <Text style={styles.brand}>Riffard Funded</Text>
 
@@ -67,10 +83,10 @@ router.replace("/");
           </Text>
         </View>
 
-        {/* CARD */}
         <View style={styles.card}>
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Email</Text>
+
             <TextInput
               value={email}
               onChangeText={setEmail}
@@ -85,6 +101,7 @@ router.replace("/");
 
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Password</Text>
+
             <TextInput
               value={password}
               onChangeText={setPassword}
@@ -104,7 +121,6 @@ router.replace("/");
           />
         </View>
 
-        {/* FOOTER */}
         <Text style={styles.footerText}>
           Restricted access • Encrypted session • Internal system
         </Text>
