@@ -10,6 +10,7 @@ import EventSource from "react-native-sse";
 
 import {
   getAccountRequest,
+  getOpenPositionsRequest,
   getRScoreRequest,
   sendRiskEquityRequest,
 } from "../lib/api";
@@ -169,6 +170,43 @@ export function TradingProvider({ children }) {
       es.close();
     };
   }, [token, account?.id]);
+
+  // ============================
+// INITIAL OPEN POSITIONS LOAD
+// ============================
+useEffect(() => {
+  if (!token || !account?.id) return;
+
+  let mounted = true;
+
+  async function loadOpenPositions() {
+    try {
+      const res = await getOpenPositionsRequest(
+        token,
+        account.id
+      );
+
+      if (!mounted) return;
+
+      setLivePositions(
+        Array.isArray(res?.positions)
+          ? res.positions
+          : []
+      );
+    } catch (e) {
+      console.log(
+        "OPEN POSITIONS LOAD ERROR",
+        e
+      );
+    }
+  }
+
+  loadOpenPositions();
+
+  return () => {
+    mounted = false;
+  };
+}, [token, account?.id]);
 
   // ============================
   // TRADING STREAM — POSITIONS / PNL

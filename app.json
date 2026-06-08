@@ -8,29 +8,30 @@
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "scheme": "riffardterminal",
-
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.riffardfunded.terminal",
       "buildNumber": "1",
-      "icon": "./assets/icon.png"
+      "icon": "./assets/icon.png",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
-
     "android": {
-  "package": "com.riffardfunded.terminal",
-  "versionCode": 1,
-  "permissions": [],
-  "blockedPermissions": ["android.permission.RECORD_AUDIO"],
-  "adaptiveIcon": {
-    "foregroundImage": "./assets/icon.png",
-    "backgroundColor": "#0B0B0D"
-  }
-},
-
+      "package": "com.riffardfunded.terminal",
+      "versionCode": 1,
+      "permissions": [],
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#0B0B0D"
+      }
+    },
     "web": {
       "favicon": "./assets/icon.png"
     },
-
     "plugins": [
       "expo-router",
       [
@@ -45,11 +46,9 @@
       "expo-secure-store",
       "expo-font"
     ],
-
     "experiments": {
       "typedRoutes": false
     },
-
     "extra": {
       "router": {},
       "eas": {
