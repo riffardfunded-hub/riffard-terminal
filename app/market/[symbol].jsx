@@ -89,7 +89,7 @@ export default function MarketSymbolScreen() {
   const router = useRouter();
   const { symbol } = useLocalSearchParams();
   const { token, account } = useAuth();
-  const { prices } = useTrading();
+  const { prices, setLivePositions } = useTrading();
 
   const normalizedSymbol = normalizeSymbol(symbol);
 
@@ -635,16 +635,25 @@ export default function MarketSymbolScreen() {
       };
 
       if (orderType === "MARKET") {
-        const data = await openTradeRequest(token, {
-          ...payload,
-          entryPrice: validation.estimatedEntryPrice,
-        });
+  const data = await openTradeRequest(token, {
+    ...payload,
+    entryPrice: validation.estimatedEntryPrice,
+  });
 
-        if (!data?.success) {
-          throw new Error("Unable to open trade.");
-        }
+  if (!data?.success) {
+    throw new Error("Unable to open trade.");
+  }
 
-        Alert.alert("Trade opened", "Your position has been created.");
+  if (data?.position) {
+    setLivePositions((prev) => [
+      data.position,
+      ...(Array.isArray(prev)
+        ? prev.filter((p) => p.id !== data.position.id)
+        : []),
+    ]);
+  }
+
+  Alert.alert("Trade opened", "Your position has been created.");
       } else {
         const pendingPayload = {
           fundedAccountId: account.id,
