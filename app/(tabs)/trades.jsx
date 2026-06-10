@@ -186,7 +186,7 @@ export default function TradesScreen() {
         stopLoss: editStopLoss ? toNumber(editStopLoss) : null,
         takeProfit: editTakeProfit ? toNumber(editTakeProfit) : null,
       });
-
+      await loadData(true); 
       setEditingId(null);
       setPartialVolume("");
     } catch (e) {
@@ -235,6 +235,7 @@ export default function TradesScreen() {
         marketPrice: livePrice,
       });
 
+      await loadData(true);
       setEditingId(null);
       setPartialVolume("");
     } catch (e) {
