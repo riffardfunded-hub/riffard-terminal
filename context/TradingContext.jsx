@@ -441,59 +441,83 @@ es.addEventListener("message", (event) => {
       clearInterval(interval);
     };
   }, [token, account?.id, accountType]);
+const refreshPositions = async () => {
+  if (!token || !account?.id) return;
 
-  const value = useMemo(
-    () => ({
-      prices,
-      livePositions,
+  try {
+    const res = await getOpenPositionsRequest(
+      token,
+      account.id
+    );
 
-      balance,
-      equity,
-      initialBalance,
-      startOfDayBalance,
-      unrealizedPnl,
+    const positions = Array.isArray(
+      res?.positions
+    )
+      ? res.positions
+      : [];
 
-      cooldownActive,
-      cooldownUntil,
-      drawdownLocked,
-      accountClosed,
-      serverAccountStatus,
-      payoutHold,
+    setLivePositions(positions);
+  } catch (e) {
+    console.log(
+      "REFRESH POSITIONS ERROR",
+      e
+    );
+  }
+};
+ const value = useMemo(
+  () => ({
+    prices,
+    livePositions,
 
-      dailyLossPercent,
-      drawdownPercent,
-      maxDrawdownPercent,
-      accountType,
-      rScore,
+    balance,
+    equity,
+    initialBalance,
+    startOfDayBalance,
+    unrealizedPnl,
 
-      setPrices,
-      setLivePositions,
-      setBalance,
-      setEquity,
-      setInitialBalance,
-      setUnrealizedPnl,
-    }),
-    [
-      prices,
-      livePositions,
-      balance,
-      equity,
-      initialBalance,
-      startOfDayBalance,
-      unrealizedPnl,
-      cooldownActive,
-      cooldownUntil,
-      drawdownLocked,
-      accountClosed,
-      serverAccountStatus,
-      payoutHold,
-      dailyLossPercent,
-      drawdownPercent,
-      maxDrawdownPercent,
-      accountType,
-      rScore,
-    ]
-  );
+    cooldownActive,
+    cooldownUntil,
+    drawdownLocked,
+    accountClosed,
+    serverAccountStatus,
+    payoutHold,
+
+    dailyLossPercent,
+    drawdownPercent,
+    maxDrawdownPercent,
+    accountType,
+    rScore,
+
+    setPrices,
+    setLivePositions,
+    setBalance,
+    setEquity,
+    setInitialBalance,
+    setUnrealizedPnl,
+
+    refreshPositions, // AJOUT IMPORTANT
+  }),
+  [
+    prices,
+    livePositions,
+    balance,
+    equity,
+    initialBalance,
+    startOfDayBalance,
+    unrealizedPnl,
+    cooldownActive,
+    cooldownUntil,
+    drawdownLocked,
+    accountClosed,
+    serverAccountStatus,
+    payoutHold,
+    dailyLossPercent,
+    drawdownPercent,
+    maxDrawdownPercent,
+    accountType,
+    rScore,
+  ]
+);
 
   return (
     <TradingContext.Provider value={value}>

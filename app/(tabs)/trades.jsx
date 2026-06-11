@@ -87,7 +87,12 @@ function getLivePrice(prices, symbol, fallback) {
 
 export default function TradesScreen() {
   const { token, account } = useAuth();
-  const { prices, livePositions, serverAccountStatus } = useTrading();
+  const {
+  prices,
+  livePositions,
+  serverAccountStatus,
+  refreshPositions,
+} = useTrading();
 
   const [loading, setLoading] = useState(true);
   const [pendingOrders, setPendingOrders] = useState([]);
@@ -228,16 +233,22 @@ export default function TradesScreen() {
 
       setActionLoadingId(position.id);
 
-      await closePositionRequest(token, {
-        fundedAccountId: account.id,
-        positionId: position.id,
-        closeVolume: volumeToClose,
-        marketPrice: livePrice,
-      });
+    await closePositionRequest(token, {
+  fundedAccountId: account.id,
+  positionId: position.id,
+  closeVolume: volumeToClose,
+  marketPrice: livePrice,
+});
 
-      await loadData(true);
-      setEditingId(null);
-      setPartialVolume("");
+await refreshPositions();
+
+setEditingId(null);
+setPartialVolume("");
+
+Alert.alert(
+  "Success",
+  "Position closed successfully."
+);
     } catch (e) {
       Alert.alert("Close failed", e?.message || "Unknown error");
     } finally {
