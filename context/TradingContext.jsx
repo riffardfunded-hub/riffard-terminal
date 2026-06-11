@@ -15,16 +15,17 @@ import {
   sendRiskEquityRequest,
 } from "../lib/api";
 
+import * as SecureStore from "expo-secure-store";
 import { useAuth } from "./AuthContext";
 
 const TradingContext = createContext(null);
-
+const POSITIONS_CACHE_KEY = "riffardCachedPositions";
 const MARKET_STREAM_URL = "https://www.riffardfunded.com/api/market/stream";
 const TRADING_STREAM_URL = "https://www.riffardfunded.com/api/trading/stream";
 const RSCORE_REFRESH_INTERVAL = 60000;
 const RISK_SYNC_INTERVAL = 10000;
-const ACCOUNT_REFRESH_INTERVAL = 15000;
-const POSITIONS_REFRESH_INTERVAL = 1000;
+const ACCOUNT_REFRESH_INTERVAL = 10000;
+const POSITIONS_REFRESH_INTERVAL = 10000;
 
 function safeNumber(value) {
   const n = Number(value);
@@ -181,26 +182,47 @@ useEffect(() => {
   let mounted = true;
 
   async function loadOpenPositions() {
-    try {
-      const res = await getOpenPositionsRequest(
-        token,
-        account.id
+  try {
+
+    const cached =
+      await SecureStore.getItemAsync(
+        POSITIONS_CACHE_KEY
       );
 
-      if (!mounted) return;
-
-      setLivePositions(
-        Array.isArray(res?.positions)
-          ? res.positions
-          : []
-      );
-    } catch (e) {
-      console.log(
-        "OPEN POSITIONS LOAD ERROR",
-        e
-      );
+    if (cached && mounted) {
+      try {
+        setLivePositions(
+          JSON.parse(cached)
+        );
+      } catch {}
     }
+
+    const res = await getOpenPositionsRequest(
+      token,
+      account.id
+    );
+
+    if (!mounted) return;
+
+    const positions =
+      Array.isArray(res?.positions)
+        ? res.positions
+        : [];
+
+    setLivePositions(positions);
+
+    await SecureStore.setItemAsync(
+      POSITIONS_CACHE_KEY,
+      JSON.stringify(positions)
+    );
+
+  } catch (e) {
+    console.log(
+      "OPEN POSITIONS LOAD ERROR",
+      e
+    );
   }
+}
 
   loadOpenPositions();
 
