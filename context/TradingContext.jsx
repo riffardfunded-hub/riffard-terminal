@@ -15,17 +15,15 @@ import {
   sendRiskEquityRequest,
 } from "../lib/api";
 
-import * as SecureStore from "expo-secure-store";
 import { useAuth } from "./AuthContext";
 
 const TradingContext = createContext(null);
-const POSITIONS_CACHE_KEY = "riffardCachedPositions";
 const MARKET_STREAM_URL = "https://www.riffardfunded.com/api/market/stream";
 const TRADING_STREAM_URL = "https://www.riffardfunded.com/api/trading/stream";
 const RSCORE_REFRESH_INTERVAL = 60000;
 const RISK_SYNC_INTERVAL = 10000;
 const ACCOUNT_REFRESH_INTERVAL = 10000;
-const POSITIONS_REFRESH_INTERVAL = 10000;
+const POSITIONS_REFRESH_INTERVAL = 3000;
 
 function safeNumber(value) {
   const n = Number(value);
@@ -176,64 +174,40 @@ export function TradingProvider({ children }) {
   // ============================
 // INITIAL OPEN POSITIONS LOAD
 // ============================
+
 useEffect(() => {
   if (!token || !account?.id) return;
 
   let mounted = true;
 
   async function loadOpenPositions() {
-  try {
-
-    const cached =
-      await SecureStore.getItemAsync(
-        POSITIONS_CACHE_KEY
+    try {
+      const res = await getOpenPositionsRequest(
+        token,
+        account.id
       );
 
-    if (cached && mounted) {
-      try {
-        setLivePositions(
-          JSON.parse(cached)
-        );
-      } catch {}
-    }
+      if (!mounted) return;
 
-    const res = await getOpenPositionsRequest(
-      token,
-      account.id
-    );
-
-    if (!mounted) return;
-
-    const positions =
-      Array.isArray(res?.positions)
+      const positions = Array.isArray(
+        res?.positions
+      )
         ? res.positions
         : [];
 
-    setLivePositions(positions);
-
-    await SecureStore.setItemAsync(
-      POSITIONS_CACHE_KEY,
-      JSON.stringify(positions)
-    );
-
-  } catch (e) {
-    console.log(
-      "OPEN POSITIONS LOAD ERROR",
-      e
-    );
+      setLivePositions(positions);
+    } catch (e) {
+      console.log(
+        "OPEN POSITIONS LOAD ERROR",
+        e
+      );
+    }
   }
-}
 
   loadOpenPositions();
 
-  const interval = setInterval(
-    loadOpenPositions,
-    POSITIONS_REFRESH_INTERVAL
-  );
-
   return () => {
     mounted = false;
-    clearInterval(interval);
   };
 }, [token, account?.id]);
 
@@ -273,11 +247,6 @@ es.addEventListener("message", (event) => {
 
     setLivePositions(positions);
 
-    SecureStore.setItemAsync(
-      POSITIONS_CACHE_KEY,
-      JSON.stringify(positions)
-    ).catch(() => {});
-
     const totalUnrealized =
       safeNumber(data.totalUnrealizedPnl) ?? 0;
 
@@ -305,7 +274,7 @@ es.addEventListener("message", (event) => {
     return () => {
       es.close();
     };
-  }, [token, account?.id, balance]);
+  }, [token, account?.id]);
 
   // ============================
   // R-SCORE
