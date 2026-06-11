@@ -53,11 +53,28 @@ export function AuthProvider({ children }) {
         if (!mounted) return;
         setToken(stored);
 
+const cachedAccount =
+  await SecureStore.getItemAsync(
+    "riffardCachedAccount"
+  );
+
+if (cachedAccount && mounted) {
+  try {
+    setAccount(JSON.parse(cachedAccount));
+  } catch {}
+}
+
         try {
           const acc = await getAccountRequest(stored);
 
-          if (!mounted) return;
-          setAccount(acc);
+if (!mounted) return;
+
+setAccount(acc);
+
+await SecureStore.setItemAsync(
+  "riffardCachedAccount",
+  JSON.stringify(acc)
+);
 
           runBackgroundTask("DEVICE_REGISTER_LOAD", () =>
             registerDeviceInBackground(stored, acc?.id || null)
@@ -111,7 +128,13 @@ export function AuthProvider({ children }) {
 
     try {
       acc = await getAccountRequest(data.token);
-      setAccount(acc);
+
+setAccount(acc);
+
+await SecureStore.setItemAsync(
+  "riffardCachedAccount",
+  JSON.stringify(acc)
+);
     } catch (e) {
       console.log("Account fetch after login failed", e);
       setAccount(null);

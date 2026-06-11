@@ -22,6 +22,7 @@
       "versionCode": 1,
       "permissions": [],
       "blockedPermissions": [
+        "android.permission.RECORD_AUDIO",
         "android.permission.RECORD_AUDIO"
       ],
       "adaptiveIcon": {
@@ -54,6 +55,12 @@
       "eas": {
         "projectId": "e0c70c24-fac5-4a5a-ab4e-10c70e614417"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/e0c70c24-fac5-4a5a-ab4e-10c70e614417"
     }
   }
 }
