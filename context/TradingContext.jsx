@@ -248,31 +248,55 @@ useEffect(() => {
     )}`;
 
     const es = new EventSource(url, {
+      
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+console.log("TRADING STREAM CONNECTING");
 
-    es.addEventListener("message", (event) => {
-      try {
-        const data = JSON.parse(event.data);
+es.addEventListener("open", () => {
+  console.log("TRADING STREAM OPEN");
+});
 
-        if (data?.type === "positions_snapshot") {
-          const positions = Array.isArray(data.positions) ? data.positions : [];
+es.addEventListener("message", (event) => {
+  try {
+    const data = JSON.parse(event.data);
 
-          setLivePositions(positions);
+    if (data?.type !== "positions_snapshot") {
+      return;
+    }
 
-          const totalUnrealized = safeNumber(data.totalUnrealizedPnl) ?? 0;
-          setUnrealizedPnl(totalUnrealized);
+    const positions = Array.isArray(data.positions)
+      ? data.positions
+      : [];
 
-          if (balance !== null) {
-            setEquity(Number((balance + totalUnrealized).toFixed(2)));
-          }
-        }
-      } catch (e) {
-        console.log("Trading stream parse failed", e);
-      }
-    });
+    setLivePositions(positions);
+
+    SecureStore.setItemAsync(
+      POSITIONS_CACHE_KEY,
+      JSON.stringify(positions)
+    ).catch(() => {});
+
+    const totalUnrealized =
+      safeNumber(data.totalUnrealizedPnl) ?? 0;
+
+    setUnrealizedPnl(totalUnrealized);
+
+    if (balance !== null) {
+      setEquity(
+        Number(
+          (balance + totalUnrealized).toFixed(2)
+        )
+      );
+    }
+  } catch (e) {
+    console.log(
+      "Trading stream parse failed",
+      e
+    );
+  }
+});
 
     es.addEventListener("error", (event) => {
       console.log("Trading stream error", event);
