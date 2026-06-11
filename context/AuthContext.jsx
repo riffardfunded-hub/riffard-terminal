@@ -43,7 +43,6 @@ export function AuthProvider({ children }) {
         let stored = null;
 
         try {
-          stored = await SecureStore.getItemAsync(TOKEN_KEY);
         } catch {
           stored = null;
         }
