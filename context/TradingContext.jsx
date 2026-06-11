@@ -24,7 +24,7 @@ const TRADING_STREAM_URL = "https://www.riffardfunded.com/api/trading/stream";
 const RSCORE_REFRESH_INTERVAL = 60000;
 const RISK_SYNC_INTERVAL = 10000;
 const ACCOUNT_REFRESH_INTERVAL = 15000;
-const POSITIONS_REFRESH_INTERVAL = 15000;
+const POSITIONS_REFRESH_INTERVAL = 1000;
 
 function safeNumber(value) {
   const n = Number(value);
