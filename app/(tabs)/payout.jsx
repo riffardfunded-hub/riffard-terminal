@@ -196,10 +196,22 @@ export default function PayoutScreen() {
   }, [method, cryptoNetwork]);
 
   const amountNumber = Number(grossAmount || 0);
-  const traderNet = amountNumber > 0 ? amountNumber * 0.8 : 0;
-  const firmShare = amountNumber > 0 ? amountNumber * 0.2 : 0;
-  const projectedBalanceAfterPayout =
-    amountNumber > 0 ? Math.max(0, liveBalance - amountNumber) : liveBalance;
+
+const payoutRate = Number(account?.payoutRate ?? account?.payout_rate ?? 80);
+const payoutCycleDays = Number(
+  account?.payoutCycleDays ?? account?.payout_cycle_days ?? 30
+);
+
+const traderNet =
+  amountNumber > 0 ? amountNumber * (payoutRate / 100) : 0;
+
+const firmShare =
+  amountNumber > 0 ? amountNumber - traderNet : 0;
+
+const projectedBalanceAfterPayout =
+  amountNumber > 0
+    ? Math.max(0, liveBalance - amountNumber)
+    : liveBalance;
 
   const selectedBeneficiary = useMemo(() => {
     return beneficiaries.find((item) => item.id === selectedBeneficiaryId) || null;
@@ -582,8 +594,8 @@ export default function PayoutScreen() {
             Current balance: {formatMoney(liveBalance)} $
           </Text>
           <Text style={styles.helperText}>
-            Cycle: 30 days minimum • 1 payout allowed per cycle
-          </Text>
+  Cycle: {payoutCycleDays} days minimum • 1 payout allowed per cycle
+</Text>
           <Text style={styles.splitLine}>
             Available gross profit:{" "}
             <Text style={styles.splitValue}>{formatMoney(availableGrossProfit)} $</Text>
@@ -605,16 +617,19 @@ export default function PayoutScreen() {
             style={styles.input}
           />
 
-          <Text style={styles.splitLine}>
-            Trader (80%): <Text style={styles.splitValue}>{formatMoney(traderNet)} $</Text>
-          </Text>
-          <Text style={styles.splitLine}>
-            Riffard (20%): <Text style={styles.splitValue}>{formatMoney(firmShare)} $</Text>
-          </Text>
-          <Text style={styles.splitLine}>
-            Balance after payout:{" "}
-            <Text style={styles.splitValue}>{formatMoney(projectedBalanceAfterPayout)} $</Text>
-          </Text>
+         <Text style={styles.splitLine}>
+  Trader ({payoutRate}%):
+  <Text style={styles.splitValue}>
+    {formatMoney(traderNet)} $
+  </Text>
+</Text>
+
+<Text style={styles.splitLine}>
+  Riffard ({100 - payoutRate}%):
+  <Text style={styles.splitValue}>
+    {formatMoney(firmShare)} $
+  </Text>
+</Text>
 
           {amountNumber > availableGrossProfit && (
             <Text style={styles.errorText}>
